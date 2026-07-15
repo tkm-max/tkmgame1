@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>荀巨伯遠看友人疾：義勇抉擇錄</title>
+    <style>
+        :root {
+            --bg-color: #0d0e12; /* 深沉黑藍底色 */
+            --card-bg: #161920; /* 卡片黑灰色 */
+            --primary-color: #d4af37; /* 經典古金 */
+            --primary-hover: #f3cf5f;
+            --text-color: #b2becd;
+            --title-color: #ffffff;
+            --border-color: #1abc9c; /* 碧玉翠綠 */
+            --danger-color: #e74c3c; /* 警示赤紅 */
+            --success-color: #2ecc71; /* 成功翠綠 */
+            --shadow-color: rgba(0, 0, 0, 0.8);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "PingFang TC", "Noto Serif TC", "Heiti TC", sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            background-image: radial-gradient(circle, #1a202c 0%, #0d0e12 100%);
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px var(--shadow-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* 歡迎與命名畫面 */
+        .screen {
+            display: none;
+            padding: 30px;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .welcome-screen {
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            min-height: 450px;
+        }
+
+        .welcome-logo {
+            font-size: 4.5rem;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 10px var(--primary-color));
+        }
+
+        .welcome-title {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.1rem;
+            color: #8fa0b5;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1rem;
+            text-align: left;
+        }
+
+        .name-input {
+            width: 100%;
+            background: #0d0e12;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            color: #fff;
+            font-size: 1.1rem;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .name-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        /* 頂部狀態列 */
+        .status-bar {
+            background-color: #0a0b0e;
+            border-bottom: 2px solid var(--primary-color);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-title {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .score-box {
+            background-color: #161920;
+            border: 1px solid var(--border-color);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: var(--border-color);
+            font-size: 0.95rem;
+            box-shadow: 0 0 8px rgba(26, 188, 156, 0.3);
+        }
+
+        .sound-toggle {
+            background: none;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .sound-toggle.muted {
+            border-color: #555;
+            color: #555;
+        }
+
+        /* 角色表情展示區 */
+        .avatar-area {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: #0d0e12;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .avatar-box {
+            text-align: center;
+            flex: 1;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-emoji {
+            font-size: 3.2rem;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .avatar-box.pulse .avatar-emoji {
+            transform: scale(1.3);
+        }
+
+        .avatar-name {
+            font-size: 0.95rem;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .avatar-status {
+            font-size: 0.8rem;
+            color: #6c7a89;
+            margin-top: 2px;
+        }
+
+        /* 故事文本 */
+        .story-text {
+            font-size: 1.15rem;
+            line-height: 1.75;
+            color: var(--title-color);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 22px;
+            border-radius: 10px;
+            border: 1px solid #2c3e50;
+            min-height: 110px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        /* 選項按鈕區 */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background-color: #1e2530;
+            color: var(--text-color);
+            border: 1px solid #2e3b4e;
+            padding: 16px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1.05rem;
+            transition: all 0.25s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn::after {
+            content: "➔";
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.25s;
+            color: var(--primary-color);
+        }
+
+        .option-btn:hover {
+            background-color: #273142;
+            border-color: var(--primary-color);
+            color: var(--title-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+
+        .option-btn:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .option-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 冒險抉擇日誌 */
+        .history-panel {
+            background: #090a0d;
+            border: 1px solid #252d3a;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 5px;
+        }
+
+        .history-title {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #252d3a;
+            padding-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+
+        .history-list {
+            list-style: none;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 10px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.02);
+            border-left: 3px solid #7f8c8d;
+        }
+
+        .history-item.plus {
+            border-left-color: var(--success-color);
+        }
+
+        .history-item.minus {
+            border-left-color: var(--danger-color);
+        }
+
+        .history-score-add {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .history-score-sub {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+
+        /* 「極限戰鬥」特定樣式 */
+        .combat-screen {
+            background-color: #1a0505; /* 戰鬥深紅底色 */
+            background-image: radial-gradient(circle, #2d0a0a 0%, #0d0101 100%);
+            border: 2px solid var(--danger-color) !important;
+            padding: 30px;
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .combat-header {
+            text-align: center;
+        }
+
+        .combat-alert {
+            color: var(--danger-color);
+            font-size: 2rem;
+            font-weight: 900;
+            text-shadow: 0 0 15px rgba(231, 76, 60, 0.9);
+            animation: flash-red 0.4s infinite alternate;
+        }
+
+        .combat-sub {
+            color: #f1c40f;
+            font-size: 1rem;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        .combat-hud {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 1px solid var(--danger-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.2);
+        }
+
+        .combat-timer {
+            color: #ff4d4d;
+        }
+
+        .combat-score {
+            color: #f1c40f;
+        }
+
+        .combat-area {
+            width: 100%;
+            max-width: 550px;
+            height: 280px;
+            background: #000;
+            border: 2px dashed var(--danger-color);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            cursor: crosshair;
+            box-shadow: inset 0 0 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .combat-target {
+            position: absolute;
+            width: 65px;
+            height: 65px;
+            font-size: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            cursor: pointer;
+            transition: all 0.08s ease-out;
+            border-radius: 50%;
+            background: rgba(231, 76, 60, 0.15);
+            border: 2px solid transparent;
+        }
+
+        .combat-target:hover {
+            background: rgba(231, 76, 60, 0.3);
+            border-color: var(--danger-color);
+            box-shadow: 0 0 10px var(--danger-color);
+        }
+
+        .combat-tip {
+            font-size: 0.9rem;
+            color: #8fa0b5;
+            text-align: center;
+        }
+
+        @keyframes flash-red {
+            0% { opacity: 0.5; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* 結局結算畫面 */
+        .ending-screen {
+            text-align: center;
+            padding: 30px 15px;
+        }
+
+        .ending-title {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-shadow: 0 0 15px rgba(214, 175, 55, 0.4);
+        }
+
+        .ending-score {
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--title-color);
+            margin: 15px 0;
+            letter-spacing: -1px;
+        }
+
+        .ending-score span {
+            font-size: 1.5rem;
+            color: #7f8c8d;
+        }
+
+        .true-ending-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f1c40f, #d4af37);
+            color: #0d0e12;
+            padding: 8px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.7);
+            border: 2px solid #fff;
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        /* 悲烈戰死特別勳章 */
+        .blood-ending-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #c0392b, #7f0000);
+            color: #ffffff;
+            padding: 8px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(192, 57, 43, 0.7);
+            border: 2px solid #e74c3c;
+            animation: blood-pulse 2s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 10px rgba(212,175,55,0.5); transform: scale(1); }
+            100% { box-shadow: 0 0 25px rgba(212,175,55,0.9); transform: scale(1.05); }
+        }
+
+        @keyframes blood-pulse {
+            0% { box-shadow: 0 0 10px rgba(192,57,43,0.5); transform: scale(1); }
+            100% { box-shadow: 0 0 25px rgba(192,57,43,0.9); transform: scale(1.05); }
+        }
+
+        .ending-desc {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: var(--title-color);
+            background: rgba(0,0,0,0.5);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #2c3e50;
+        }
+
+        .action-btn {
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 16px 45px;
+            font-size: 1.15rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .action-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        }
+
+        /* 滾動條美化 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0e12;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #252d3a;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+
+        <!-- 歡迎與登入畫面 -->
+        <div class="screen welcome-screen active" id="screen-welcome">
+            <div class="welcome-logo">📜</div>
+            <h1 class="welcome-title">荀巨伯遠看友人疾</h1>
+            <p class="welcome-subtitle">義勇抉擇錄</p>
+
+            <div class="input-group">
+                <label for="username">請輸入您的姓名，代入荀巨伯的角色：</label>
+                <input type="text" id="username" class="name-input" placeholder="例如：張小明" maxlength="10">
+            </div>
+
+            <button class="action-btn" onclick="startGame()">開啟義勇之旅</button>
+        </div>
+
+        <!-- 遊戲主體畫面 (HUD + 內容) -->
+        <div class="screen" id="screen-game" style="padding:0;">
+            <!-- 頂部狀態列 -->
+            <div class="status-bar">
+                <span class="status-title" id="stage-title">第一幕：聽聞疾訊</span>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="sound-toggle" id="soundBtn" onclick="toggleMute()">🔈 聲音：開</button>
+                    <div class="score-box">道義值：<span id="score-display">0</span> / 100</div>
+                </div>
+            </div>
+
+            <!-- 主體玩樂區 -->
+            <div class="game-body" style="padding: 25px; display: flex; flex-direction: column; gap: 20px;">
+                <!-- 角色表情與狀態 -->
+                <div class="avatar-area">
+                    <div class="avatar-box" id="avatar-jubo">
+                        <div class="avatar-emoji" id="emoji-jubo">🧑‍🎓</div>
+                        <div class="avatar-name" id="jubo-display-name">荀巨伯</div>
+                        <div class="avatar-status" id="status-jubo">躊躇滿志</div>
+                    </div>
+                    <div class="avatar-box" id="avatar-friend">
+                        <div class="avatar-emoji" id="emoji-friend">🤒</div>
+                        <div class="avatar-name">友人</div>
+                        <div class="avatar-status" id="status-friend">臥病在床</div>
+                    </div>
+                    <div class="avatar-box" id="avatar-invader" style="opacity: 0.2;">
+                        <div class="avatar-emoji" id="emoji-invader">👹</div>
+                        <div class="avatar-name">胡賊</div>
+                        <div class="avatar-status" id="status-invader">尚未現身</div>
+                    </div>
+                </div>
+
+                <!-- 故事文本 -->
+                <div class="story-text" id="story-display">
+                    故事加載中...
+                </div>
+
+                <!-- 選項 -->
+                <div class="options-list" id="options-display">
+                    <!-- 選項將動態渲染 -->
+                </div>
+
+                <!-- 抉擇歷史歷程 -->
+                <div class="history-panel">
+                    <div class="history-title">
+                        <span>📜 冒險抉擇日誌</span>
+                        <span style="font-size: 0.8rem; color:#6c7a89;">（記錄您在此生涯中的道德路徑）</span>
+                    </div>
+                    <ul class="history-list" id="history-display-list">
+                        <li style="color:#555; text-align:center; padding-top:10px;">尚未做出抉擇...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 「極限戰鬥」迷你遊戲畫面 -->
+        <div class="screen combat-screen" id="screen-combat">
+            <div class="combat-header">
+                <div class="combat-alert">🚨 ⚠️ 極限戰鬥：十死無生 ⚠️ 🚨</div>
+                <div class="combat-sub">你是一介無武功的普通儒生，正拔劍抗擊狂暴的胡兵大軍！</div>
+            </div>
+            <div class="combat-hud">
+                <div class="combat-timer">⏱️ 剩餘時間：<span id="combat-time">5.0</span>s</div>
+                <div class="combat-score">⚔️ 擊中弱點：<span id="combat-clicks">0</span> / 20</div>
+            </div>
+            <div id="combat-area" class="combat-area">
+                <div id="combat-target" class="combat-target">🎯</div>
+            </div>
+            <div class="combat-tip">💡 提示：胡兵弱點極速移動！在 5 秒內快速點擊弱點達 20 次，進行絕地反擊！</div>
+        </div>
+
+        <!-- 最終結局結算畫面 -->
+        <div class="screen ending-screen" id="screen-ending">
+            <div class="ending-title" id="end-title">遊戲結束</div>
+            <div id="true-badge-container"></div>
+
+            <div style="font-size: 1.1rem; color: #8fa0b5;"><span id="player-summary-name">同學</span> 的最終道義值：</div>
+            <div class="ending-score">
+                <span id="final-score-val">0</span><span> / 100 分</span>
+            </div>
+
+            <div class="ending-desc" id="end-desc">
+                您的結局描述將會在此顯示。
+            </div>
+
+            <!-- 結算頁面抉擇復盤 -->
+            <div class="history-panel" style="text-align: left; margin-bottom: 25px;">
+                <div class="history-title" style="color:var(--primary-color);">🌟 本局完整抉擇軌跡覆盤：</div>
+                <ul class="history-list" id="final-history-list" style="max-height: none;">
+                </ul>
+            </div>
+
+            <button class="action-btn" onclick="restartGame()">重振旗鼓 再啟征途</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 聲音播放系統 (Web Audio API) ---
+        let isMuted = false;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            } catch(e) {}
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const btn = document.getElementById("soundBtn");
+            if (isMuted) {
+                btn.innerHTML = "🔇 聲音：關";
+                btn.classList.add("muted");
+            } else {
+                btn.innerHTML = "🔈 聲音：開";
+                btn.classList.remove("muted");
+                playEffect('normal');
+            }
+        }
+
+        function playEffect(type) {
+            if (isMuted) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+
+                if (type === 'good') {
+                    // 悅耳大氣上升音 (完美/加分)
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15); // G5
+                    osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.3); // C6
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'bad') {
+                    // 警示下降沉悶音 (扣分/危險)
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now); // A3
+                    osc.frequency.linearRampToValueAtTime(110, now + 0.35); // A2
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'fight') {
+                    // 戰鬥或衝突音：更加尖銳的金鐵交鳴聲
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(150, now + 0.15);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                } else if (type === 'victory') {
+                    // 勝利大捷凱旋音樂
+                    osc.type = 'triangle';
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const noteOsc = audioCtx.createOscillator();
+                        const noteGain = audioCtx.createGain();
+                        noteOsc.connect(noteGain);
+                        noteGain.connect(audioCtx.destination);
+                        noteOsc.type = 'triangle';
+                        noteOsc.frequency.setValueAtTime(freq, now + idx * 0.12);
+                        noteGain.gain.setValueAtTime(0.15, now + idx * 0.12);
+                        noteGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.4);
+                        noteOsc.start(now + idx * 0.12);
+                        noteOsc.stop(now + idx * 0.12 + 0.4);
+                    });
+                } else {
+                    // 普通中性選擇音
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, now);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                }
+            } catch (e) {
+                console.log("Audio Context initialization failed or requires user gesture.");
+            }
+        }
+
+
+        // --- 遊戲狀態與故事腳本資料 ---
+        let playerName = "荀巨伯";
+        let currentScore = 0;
+        let currentStage = 1;
+        let choiceHistory = [];
+        
+        let isCombatPath = false;      // 是否進入了暴起抵抗的血戰分支
+        let isCombatVictory = false;   // 在極限戰鬥中是否成功 (極難)
+
+        // 隨機打亂陣列的輔助函數 (Fisher-Yates Shuffle)
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // 故事腳本樹狀結構
+        const storyScript = {
+            1: {
+                title: "第一幕：聽聞疾訊",
+                story: () => `遠方的摯友突然染上重病。適逢胡賊大舉入侵，戰亂四起，城內居民皆拖家帶口、倉皇逃難。此時身處安全地帶的你，該作何抉擇？`,
+                emojis: { jubo: "🧑‍🎓", friend: "🤒", invader: "👹" },
+                status: { jubo: "面臨兩難", friend: "奄奄一息", invader: "胡人逼近" },
+                opacity: { invader: 0.2 },
+                options: [
+                    {
+                        text: "【友情最上】隻身快馬趕往友人家中探病！",
+                        score: 25,
+                        log: "聽聞疾訊，不避艱險，隻身前往探病。",
+                        sound: "good",
+                        next: 2
+                    },
+                    {
+                        text: "【隔空關懷】路途太過危險，留在後方，寫一封情真意切的信問候。",
+                        score: 10,
+                        log: "因畏懼戰火，選擇留在後方寫信關切。",
+                        sound: "normal",
+                        next: 2
+                    },
+                    {
+                        text: "【保命要緊】天下大亂，保全生命最重要。裝作不知道這件事。",
+                        score: 0,
+                        log: "選擇明哲保身，裝作不知道摯友重病的事。",
+                        sound: "bad",
+                        next: 2
+                    }
+                ]
+            },
+            2: {
+                title: "第二幕：兵臨城下",
+                story: () => `當你抵達郡城，發現戰火蔓延，胡賊的巡邏兵已在城內橫行搜掠。此時，通往友人府邸的路被一隊巡邏敵兵擋住，你必須立刻反應：`,
+                emojis: { jubo: "😰", friend: "🤒", invader: "⚔️" },
+                status: { jubo: "潛行避敵", friend: "孤立無援", invader: "街頭劫掠" },
+                opacity: { invader: 0.7 },
+                options: [
+                    {
+                        text: "【潛伏避敵】冷靜觀察敵軍動向，利用小巷暗影及雜物堆遮擋，悄悄繞行。",
+                        score: 25,
+                        log: "機智冷靜，利用小巷躲避敵兵，安全抵達友人房中。",
+                        sound: "good",
+                        next: 3
+                    },
+                    {
+                        text: "【伺機突襲】主動出擊！趁落單敵兵不備，用土石與路旁木棍偷襲，製造混亂！",
+                        score: 15,
+                        log: "血氣方剛，主動攻擊散落的敵兵。雖然成功逃脫但手臂受輕傷。",
+                        sound: "fight",
+                        next: 3
+                    },
+                    {
+                        text: "【驚慌失措】一時害怕，不顧一切直接在大街上拔腿狂奔！",
+                        score: 5,
+                        log: "驚慌失措在大街奔跑，幸好命大躲過羽箭，但引來了胡兵注意。",
+                        sound: "bad",
+                        next: 3
+                    }
+                ]
+            },
+            3: {
+                title: "第三幕：生死重逢",
+                story: () => `你終於衝進友人房間。友人奄奄一息，震驚地說：「我快病死了，胡人已入城，你來做甚麼？快走！不要為了我白白送命！」此時胡人的沉重腳步聲在門外響起：`,
+                emojis: { jubo: "😟", friend: "😱", invader: "👹" },
+                status: { jubo: "大義凛然", friend: "驚恐勸離", invader: "搜捕至此" },
+                opacity: { invader: 0.9 },
+                options: [
+                    {
+                        text: "【守護到底】「我豈是棄友苟活之人？」誓與友人共生死，守在榻前！",
+                        score: 25,
+                        log: "拒絕拋棄病友，堅持留下陪伴守護，大義凜然。",
+                        sound: "good",
+                        next: 4
+                    },
+                    {
+                        text: "【帶病突圍】「要走一起走！」強行扶起虛弱的友人，試圖從後窗伺機突圍！",
+                        score: 15,
+                        log: "意圖攜友突圍，但友人病勢過重無法行走，兩人被堵在柴房。",
+                        sound: "fight",
+                        next: 4
+                    },
+                    {
+                        text: "【委曲求全】聽從勸告，主動藏到床底或衣櫃中，打算暗中伺機救助。",
+                        score: 10,
+                        log: "選擇潛伏於櫃中避難，目睹胡人破門而入。",
+                        sound: "normal",
+                        next: 4
+                    },
+                    {
+                        text: "【臨陣脫逃】「保重！」你深感恐懼，向友人抱拳痛哭，獨自從密道落荒而逃。",
+                        score: 0,
+                        log: "在最後關頭不耐高壓，拋下友人獨自逃生。",
+                        sound: "bad",
+                        next: 4
+                    }
+                ]
+            },
+            4: {
+                title: "第四幕：大義懾賊",
+                story: () => `胡賊首領破門而入，滿面橫肉，拔出鋼刀喝問：「大軍一到，全城空虛，你是什麼人，竟敢獨自留下？！」這生死關頭，你的最終表態是：`,
+                emojis: { jubo: "😡", friend: "😰", invader: "⚔️" },
+                status: { jubo: "捨生取義", friend: "命懸一線", invader: "震怒拷問" },
+                opacity: { invader: 1.0 },
+                options: [
+                    {
+                        text: "【慷慨就義】「友人重病，我不忍拋棄。我願以身代友人受戮，請勿傷他！」",
+                        score: 25,
+                        log: "大義凜然，願以己命代友受死。高尚情操震撼胡人首領！",
+                        sound: "good",
+                        next: "end"
+                    },
+                    {
+                        text: "【拔劍死戰】「欺人太甚！」拔出壁上懸掛的古長劍，誓死向胡賊首領展開極限搏殺！",
+                        score: 10,
+                        log: "在生死攸關之際激發烈士血性，拔劍誓死抗爭，進入極限搏殺對決！",
+                        sound: "fight",
+                        isCombatTrigger: true, // 觸發實體小遊戲戰鬥
+                        next: "end"
+                    },
+                    {
+                        text: "【花言巧語】辯稱自己是誤入此地的郎中，願意為胡軍效勞治病，懇求饒命。",
+                        score: 5,
+                        log: "以欺瞞郎中身份求和，雖免一死，但失去了道義風骨。",
+                        sound: "normal",
+                        next: "end"
+                    },
+                    {
+                        text: "【跪地求饒】雙膝跪地求饒，雙手呈上身上所有的金銀財寶，祈求留一條生路。",
+                        score: 0,
+                        log: "向侵略者叩首求饒，尊嚴盡失，道義化為烏有。",
+                        sound: "bad",
+                        next: "end"
+                    }
+                ]
+            }
+        };
+
+        // --- 核心遊戲流程控制 ---
+
+        function startGame() {
+            const nameInput = document.getElementById("username").value.trim();
+            if (nameInput !== "") {
+                playerName = nameInput;
+            } else {
+                playerName = "荀巨伯";
+            }
+
+            // 更新顯示名稱
+            document.getElementById("jubo-display-name").textContent = playerName;
+
+            // 切換畫面
+            document.getElementById("screen-welcome").classList.remove("active");
+            document.getElementById("screen-game").classList.add("active");
+
+            // 初始化數值
+            currentScore = 0;
+            currentStage = 1;
+            choiceHistory = [];
+            isCombatPath = false;
+            isCombatVictory = false;
+
+            updateStage();
+            playEffect('normal');
+        }
+
+        function updateStage() {
+            if (currentStage === "end") {
+                endGame();
+                return;
+            }
+
+            const data = storyScript[currentStage];
+
+            // 頂部進度
+            document.getElementById("stage-title").textContent = data.title;
+            document.getElementById("score-display").textContent = currentScore;
+
+            // 故事文本 (動態生成主角姓名)
+            document.getElementById("story-display").innerHTML = data.story();
+
+            // 更新表情與狀態
+            const emojiJubo = document.getElementById("emoji-jubo");
+            const emojiFriend = document.getElementById("emoji-friend");
+            const emojiInvader = document.getElementById("emoji-invader");
+
+            emojiJubo.textContent = data.emojis.jubo;
+            emojiFriend.textContent = data.emojis.friend;
+            emojiInvader.textContent = data.emojis.invader;
+
+            document.getElementById("status-jubo").textContent = data.status.jubo;
+            document.getElementById("status-friend").textContent = data.status.friend;
+            document.getElementById("status-invader").textContent = data.status.invader;
+
+            // 設定胡賊透明度 (隨劇情推進越來越強烈)
+            document.getElementById("avatar-invader").style.opacity = data.opacity.invader;
+
+            // 觸發角色頭像晃動特效
+            const boxes = document.querySelectorAll(".avatar-box");
+            boxes.forEach(box => {
+                box.classList.add("pulse");
+                setTimeout(() => box.classList.remove("pulse"), 500);
+            });
+
+            // 渲染選項並進行「隨機打亂排序」
+            const optionsContainer = document.getElementById("options-display");
+            optionsContainer.innerHTML = "";
+
+            // 隨機打亂當前劇情的選項
+            const shuffledOptions = shuffleArray(data.options);
+
+            shuffledOptions.forEach(opt => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerHTML = `<span>${opt.text}</span>`;
+                btn.onclick = () => selectOption(opt);
+                optionsContainer.appendChild(btn);
+            });
+
+            // 渲染即時冒險日誌
+            renderHistoryLog("history-display-list");
+        }
+
+        function selectOption(opt) {
+            currentScore += opt.score;
+
+            // 檢測是否進入戰鬥抗爭路徑
+            if (opt.isCombatTrigger) {
+                isCombatPath = true;
+            }
+
+            choiceHistory.push({
+                stageTitle: storyScript[currentStage].title,
+                choiceText: opt.text,
+                addedScore: opt.score,
+                logDetail: opt.log
+            });
+
+            // 播放對應音效
+            playEffect(opt.sound);
+
+            if (opt.isCombatTrigger) {
+                // 進入極限對決小遊戲畫面
+                startCombatGame();
+            } else {
+                currentStage = opt.next;
+                updateStage();
+            }
+        }
+
+        // --- 「極限戰鬥」迷你遊戲系統 ---
+        let combatTimer = null;
+        let combatMoveTimer = null;
+        let combatTimeLeft = 5.0;
+        let combatHits = 0;
+        const clicksNeeded = 20;
+
+        function startCombatGame() {
+            // 切換畫面
+            document.getElementById("screen-game").classList.remove("active");
+            document.getElementById("screen-combat").classList.add("active");
+
+            // 初始化戰鬥數值
+            combatTimeLeft = 5.0;
+            combatHits = 0;
+            document.getElementById("combat-time").textContent = combatTimeLeft.toFixed(1);
+            document.getElementById("combat-clicks").textContent = combatHits;
+
+            // 模擬戰鬥心跳警報音效
+            playCombatSiren();
+
+            // 定位首個目標
+            moveCombatTarget();
+
+            // 定時移動目標（每 550ms 隨機移動一次，逼迫玩家必須有極快的手速與反應）
+            if (combatMoveTimer) clearInterval(combatMoveTimer);
+            combatMoveTimer = setInterval(moveCombatTarget, 550);
+
+            // 5秒極限倒計時 (每 100 毫秒刷新一次)
+            if (combatTimer) clearInterval(combatTimer);
+            combatTimer = setInterval(() => {
+                combatTimeLeft -= 0.1;
+                if (combatTimeLeft <= 0) {
+                    combatTimeLeft = 0;
+                    document.getElementById("combat-time").textContent = "0.0";
+                    endCombatGame(false); // 倒數結束：失敗（戰死結局）
+                } else {
+                    document.getElementById("combat-time").textContent = combatTimeLeft.toFixed(1);
+                }
+            }, 100);
+        }
+
+        function playCombatSiren() {
+            if (isMuted) return;
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+                // 產生一連串急促的警報/戰鬥低頻音
+                for (let i = 0; i < 5; i++) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(120, now + i * 1.0);
+                    osc.frequency.linearRampToValueAtTime(190, now + i * 1.0 + 0.4);
+                    gain.gain.setValueAtTime(0.08, now + i * 1.0);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 1.0 + 0.8);
+                    osc.start(now + i * 1.0);
+                    osc.stop(now + i * 1.0 + 0.9);
+                }
+            } catch(e) {}
+        }
+
+        function moveCombatTarget() {
+            const area = document.getElementById("combat-area");
+            const target = document.getElementById("combat-target");
+            
+            const areaWidth = area.clientWidth || 500;
+            const areaHeight = area.clientHeight || 280;
+            
+            // 隨機更換弱點視覺符號，增加張力
+            const combatEmojis = ["🎯", "⚔️", "🩸", "💢", "💀"];
+            target.textContent = combatEmojis[Math.floor(Math.random() * combatEmojis.length)];
+
+            // 計算隨機 X, Y 位置，防止超出邊界
+            const maxX = areaWidth - 75;
+            const maxY = areaHeight - 75;
+            
+            const randomX = Math.max(10, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(10, Math.floor(Math.random() * maxY));
+            
+            target.style.left = randomX + "px";
+            target.style.top = randomY + "px";
+        }
+
+        // 弱點點擊事件
+        document.getElementById("combat-target").addEventListener("mousedown", (e) => {
+            e.stopPropagation(); // 阻止冒泡到背景點擊
+            combatHits++;
+            document.getElementById("combat-clicks").textContent = combatHits;
+            
+            // 播放金鐵交鳴刀劍聲
+            playEffect('fight');
+            
+            // 點擊成功後立刻刷新到下一處隨機位置
+            moveCombatTarget();
+            
+            // 奇蹟判定：達到 20 次點擊
+            if (combatHits >= clicksNeeded) {
+                endCombatGame(true); // 觸發絕地反擊奇蹟成功！
+            }
+        });
+
+        // 點擊空地（打鐵/刺空音效）
+        document.getElementById("combat-area").addEventListener("mousedown", () => {
+            if (isMuted) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(90, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.1);
+            } catch(e){}
+        });
+
+        function endCombatGame(isSuccess) {
+            clearInterval(combatTimer);
+            clearInterval(combatMoveTimer);
+            
+            document.getElementById("screen-combat").classList.remove("active");
+            
+            isCombatPath = true;
+            isCombatVictory = isSuccess;
+            
+            currentStage = "end";
+            endGame();
+        }
+
+        // --- 冒險歷程日誌渲染 ---
+        function renderHistoryLog(elementId, isFinal = false) {
+            const listEl = document.getElementById(elementId);
+            listEl.innerHTML = "";
+
+            if (choiceHistory.length === 0) {
+                listEl.innerHTML = `<li style="color:#666; text-align:center; padding-top:10px;">尚未做出抉擇...</li>`;
+                return;
+            }
+
+            choiceHistory.forEach((item, index) => {
+                const li = document.createElement("li");
+
+                let scoreClass = "";
+                let scoreText = "";
+
+                if (item.addedScore >= 20) {
+                    li.className = "history-item plus";
+                    scoreText = `+${item.addedScore} 分 (大義)`;
+                    scoreClass = "history-score-add";
+                } else if (item.addedScore <= 5) {
+                    li.className = "history-item minus";
+                    scoreText = `+${item.addedScore} 分 (失節)`;
+                    scoreClass = "history-score-sub";
+                } else {
+                    li.className = "history-item";
+                    scoreText = `+${item.addedScore} 分 (對抗)`;
+                    scoreClass = "";
+                }
+
+                if (isFinal) {
+                    li.innerHTML = `
+                        <div style="display:flex; flex-direction:column; gap:2px; width:100%;">
+                            <div style="display:flex; justify-content:space-between; font-weight:bold; color:var(--primary-color);">
+                                <span>第 ${index + 1} 步：${item.stageTitle}</span>
+                                <span class="${scoreClass}">${scoreText}</span>
+                            </div>
+                            <div style="color:#fff; margin-top:2px;">選擇：${item.choiceText}</div>
+                            <div style="color:#8fa0b5; font-size:0.8rem; font-style:italic;">結果評註：${item.logDetail}</div>
+                        </div>
+                    `;
+                    li.style.padding = "10px";
+                    li.style.marginBottom = "8px";
+                    li.style.background = "#131720";
+                } else {
+                    li.innerHTML = `
+                        <span>步 ${index + 1}：${item.logDetail}</span>
+                        <span class="${scoreClass}">${scoreText}</span>
+                    `;
+                }
+
+                listEl.appendChild(li);
+            });
+        }
+
+        // --- 結局判定與跑分系統 ---
+
+        function endGame() {
+            // 切換到結局畫面
+            document.getElementById("screen-game").classList.remove("active");
+            document.getElementById("screen-ending").classList.add("active");
+
+            // 設置玩家總結名
+            document.getElementById("player-summary-name").textContent = playerName;
+
+            // 計算最後分數
+            let displayFinalScore = currentScore;
+
+            // 戰死結局分數最高鎖定在 90 分以內，凸顯「真結局」100分之地位
+            if (isCombatPath) {
+                if (isCombatVictory) {
+                    displayFinalScore = 99; // 手速大師隱藏彩蛋：99分
+                } else {
+                    if (displayFinalScore > 85) displayFinalScore = 85; // 戰死失敗上限
+                }
+            }
+
+            // 跑分動畫效果
+            const finalScoreVal = document.getElementById("final-score-val");
+            let tempScore = 0;
+            const scoreInterval = setInterval(() => {
+                if (tempScore >= displayFinalScore) {
+                    finalScoreVal.textContent = displayFinalScore;
+                    clearInterval(scoreInterval);
+                } else {
+                    tempScore += 1;
+                    if (tempScore > displayFinalScore) tempScore = displayFinalScore;
+                    finalScoreVal.textContent = tempScore;
+                }
+            }, 25);
+
+            // 判斷結局描述
+            const endTitle = document.getElementById("end-title");
+            const badgeContainer = document.getElementById("true-badge-container");
+            const endDesc = document.getElementById("end-desc");
+
+            badgeContainer.innerHTML = "";
+
+            if (isCombatPath) {
+                if (isCombatVictory) {
+                    // 隱藏彩蛋：手速狂飆大逆轉結局
+                    endTitle.textContent = "⚔️ 達成隱藏結局：儒聖劍豪，逆天弒神！";
+                    badgeContainer.innerHTML = `<div class="true-ending-badge" style="background: linear-gradient(135deg, #e74c3c, #f1c40f); border-color: #fff; animation: pulse-glow 1s infinite alternate;">🔥 傳奇之印：手速之神，降魔儒俠 🔥</div>`;
+                    endDesc.innerHTML = `
+                        <strong>【逆天改命！史無前例的指尖奇蹟！】</strong><br><br>
+                        天啊！你（<strong>${playerName}</strong>）竟然在短短 5 秒鐘之內，在極高難度的亂序晃動下，精準擊中了胡兵弱點達 20 次！這簡直是武林神話、儒俠劍聖再世！<br><br>
+                        只見你抄起古長劍，身形化作一道赤紅疾影，在敵軍之中穿梭自如、連點敵軍二十處大穴死穴！胡兵將領被你瞬間擊破，嚇得肝膽俱裂，連滾帶爬地哀號：<em>「此人非凡夫俗子，乃是劍仙降世啊！快撤！快撤！」</em>整支先鋒大軍登時潰不成軍，落荒而逃！你憑藉一己之力，用無敵的神速和劍技保全了病友，拯救了全城百姓！<br><br>
+                        <strong>【道義/手速最高成就：天外飛仙！然因過於脫離歷史與常理（荀巨伯本為文弱儒生），本局道義值結算為 99 分。向您的極限手速致敬！只有在第四關以純粹大義感化敵軍，才能拿到正史中完美的 100 分真結局。】</strong>
+                    `;
+                    playEffect('victory');
+                } else {
+                    // 標準血戰戰死結局 (烈士慷慨就義)
+                    endTitle.textContent = "💀 達成烈士結局：慷慨就義，血染沙場";
+                    badgeContainer.innerHTML = `<div class="blood-ending-badge">🩸 英烈之印：血性抗爭，義烈千秋 🩸</div>`;
+                    endDesc.innerHTML = `
+                        你（<strong>${playerName}</strong>）雖然手無寸鐵、只是一介儒生，但在面對暴虐胡兵的屠刀時，選擇了最剛烈、最勇敢的拔劍死戰！<br><br>
+                        然而，因為力量極度懸殊（荀巨伯理論上只是普通儒生，無法憑武功單挑大兵團），你在這場 5 秒鐘的絕境搏殺中體力不支，終究被斬倒在血泊中，壯烈戰死！但你用生命與鮮血，實踐了<em>「義之所在，雖千萬人吾往矣」</em>的至高誓言！<br><br>
+                        友人抱著你漸冷的遺體放聲大哭。胡賊首領看著你的屍身，也忍不住收起鋼刀，嘆息道：<em>「此人雖無武藝，卻有驚天之膽魄與忠義！大破此城，竟有如此烈士，我輩深感慚愧！」</em>胡兵深受震撼，下令將你與友人安葬，並退兵而去。<br><br>
+                        <strong>【道義最高成就：儒俠之魂，血染長歌！雖然身死，但你的風骨永留青史！（本局最終得分：${displayFinalScore}分）】</strong>
+                    `;
+                    playEffect('bad'); // 播放悲壯低沉音效
+                }
+            } else if (displayFinalScore === 100) {
+                // 100分歷史唯一真結局
+                endTitle.textContent = "🏆 達成完美真結局！";
+                badgeContainer.innerHTML = `<div class="true-ending-badge">✨ 達成真結局：義之所至，金石為開 ✨</div>`;
+                endDesc.innerHTML = `
+                    <strong>《荀巨伯遠看友人疾》正史記載：</strong><br><br>
+                    胡賊首領看見你（<strong>${playerName}</strong>）大義凛然、甘願以身代友受戮，感到無比震撼，慚愧嘆道：<br>
+                    <em>「我輩無義之人，而入有義之國！」</em><br><br>
+                    於是，胡軍將領深受感化，下令班師回朝，整支軍隊撤出該郡！你憑藉無上的仁義與超凡的勇氣，不費一兵一卒，保全了病友的性命，更拯救了全城百姓！<br><br>
+                    <strong>【道義最高成就：儒風千古，義勇無雙！】</strong>
+                `;
+                playEffect('victory');
+            } else if (displayFinalScore >= 70) {
+                // 普通好結局
+                endTitle.textContent = "🌅 達成普通結局：死裡逃生";
+                endDesc.innerHTML = `
+                    你（<strong>${playerName}</strong>）展現了過人的勇氣與對朋友的赤誠！雖然胡賊並未完全退兵，但在混亂中，你憑藉機智與部分防身手段，成功保護友人，趁夜突圍成功逃難。<br><br>
+                    雖然你的大義感動了友人，但未能達到正史中讓敵軍全軍感化退兵的完美道德境界。下一次，試著在每一關都堅持至死不渝的最高信條吧！<br><br>
+                    <strong>【道義成就：智勇雙全的忠肝義膽】</strong>
+                `;
+                playEffect('good');
+            } else if (displayFinalScore >= 40) {
+                // 遺憾結局
+                endTitle.textContent = "🍂 達成遺憾結局：遺憾退隱";
+                endDesc.innerHTML = `
+                    面對胡賊狂野的侵略，你（<strong>${playerName}</strong>）雖然心懷善意，但在關鍵時刻，你選擇了妥協、藏匿或部分退縮。友人雖未怪罪你，但戰亂過後，心中始終留有遺憾，從此兩人淡泊名利，相忘於江湖。<br><br>
+                    <strong>【道義成就：平凡的患難之交】</strong>
+                `;
+                playEffect('normal');
+            } else {
+                // 壞結局
+                endTitle.textContent = "💀 達成悲慘結局：苟且偷生";
+                endDesc.innerHTML = `
+                    在慘烈的戰爭與死亡威脅下，你（<strong>${playerName}</strong>）選擇了背棄朋友，或向暴虐的胡賊叩首求饒、獻寶乞命。<br><br>
+                    你雖然在戰亂中苟活了下來，但從此失去了所有的尊嚴與人格。友人孤獨在城中病逝或遇難，你的餘生也將永遠活在內疚與世人的鄙夷之中。<br><br>
+                    <strong>【道義警告：道義淪喪，背信棄義】</strong>
+                `;
+                playEffect('bad');
+            }
+
+            // 渲染最終完整抉擇復盤
+            renderHistoryLog("final-history-list", true);
+        }
+
+        function restartGame() {
+            // 切換回歡迎畫面
+            document.getElementById("screen-ending").classList.remove("active");
+            document.getElementById("screen-welcome").classList.add("active");
+            document.getElementById("username").value = "";
+            playEffect('normal');
+        }
+    </script>
+</body>
+</html>
